@@ -3,7 +3,56 @@ package Perl::Phase;
 use strict;
 use warnings;
 
-$Perl::Phase::VERSION = '0.01';
+use 5.14.0;    # for ${^GLOBAL_PHASE}
+
+our $VERSION = '0.01';
+
+sub is_compile_time {
+
+    # why not just `return !is_run_time();`? more explicit/accurate && save a `pp_entersub` op
+    return ${^GLOBAL_PHASE}
+      if ${^GLOBAL_PHASE} eq "CONSTRUCT"
+      || ${^GLOBAL_PHASE} eq "START"
+      || ${^GLOBAL_PHASE} eq "CHECK";
+    return;
+}
+
+sub is_run_time {
+    return ${^GLOBAL_PHASE}
+      if ${^GLOBAL_PHASE} eq "INIT"
+      || ${^GLOBAL_PHASE} eq "RUN"
+      || ${^GLOBAL_PHASE} eq "END"
+      || ${^GLOBAL_PHASE} eq "DESTRUCT";
+    return;
+}
+
+sub assert_is_run_time {
+    return ${^GLOBAL_PHASE} if is_run_time();
+
+    my @caller = caller(1);
+    if (@caller) {
+        die "$caller[3]() called at compile time at $caller[1] line $caller[2]\n";
+    }
+    else {
+        die "This code should not be executed at compile time";
+    }
+
+    return ${^GLOBAL_PHASE};
+}
+
+sub assert_is_compile_time {
+    return ${^GLOBAL_PHASE} if is_compile_time();
+
+    my @caller = caller(1);
+    if (@caller) {
+        die "$caller[3]() called at run time at $caller[1] line $caller[2]\n";
+    }
+    else {
+        die "This code should not be executed at run time";
+    }
+
+    return;
+}
 
 1;
 
@@ -11,8 +60,7 @@ __END__
 
 =head1 NAME
 
-Perl::Phase - [One line description of module's purpose here]
-
+Perl::Phase - Check if you are currently in compile time or run time
 
 =head1 VERSION
 
@@ -22,85 +70,65 @@ This document describes Perl::Phase version 0.01
 
     use Perl::Phase;
 
-=for author to fill in:
-    Brief code example(s) here showing commonest usage(s).
-    This section will be as far as many users bother reading
-    so make it as educational and exeplary as possible.
-  
-  
+    sub foo {
+        Perl::Phase::assert_is_run_time();
+
+        …
+    }
+
 =head1 DESCRIPTION
 
-=for author to fill in:
-    Write a full description of the module and its features here.
-    Use subsections (=head2, =head3) as appropriate.
+Some code should only run at runtime some only at compile time.
+
+This functions let you check (boolean) or assert (die) either.
 
 
-=head1 INTERFACE 
+=head1 INTERFACE
 
-=for author to fill in:
-    Write a separate section listing the public components of the modules
-    interface. These normally consist of either subroutines that may be
-    exported, or methods that may be called on objects belonging to the
-    classes provided by the module.
+None of these functions take any arguments.
 
+Any true value returned is also the current phase name.
+
+=head2 Perl::Phase::is_compile_time()
+
+Returns true if executed at compile time, false if executed at run time.
+
+=head2 Perl::Phase::assert_is_compile_time()
+
+Dies if executed at run time, otherwise returns true.
+
+=head2 Perl::Phase::is_run_time()
+
+Returns true if executed at run time, false if executed at compile time.
+
+=head2 Perl::Phase::assert_is_run_time()
+
+Dies if executed at compile time, otherwise returns true.
 
 =head1 DIAGNOSTICS
 
-=for author to fill in:
-    List every single error and warning message that the module can
-    generate (even the ones that will "never happen"), with a full
-    explanation of each problem, one or more likely causes, and any
-    suggested remedies.
+Assert can have two types of die message depending on the caller information.
 
 =over
 
-=item C<< Error message here, perhaps with %s placeholders >>
+=item C<< "%s() called at (run|compile) time at %s line %n\n">>
 
-[Description of error here]
-
-=item C<< Another error message here >>
-
-[Description of error here]
-
-[Et cetera, et cetera]
+=item C<< This code should not be executed at (run|compile) time" >>
 
 =back
 
-
 =head1 CONFIGURATION AND ENVIRONMENT
 
-=for author to fill in:
-    A full explanation of any configuration system(s) used by the
-    module, including the names and locations of any configuration
-    files, and the meaning of any environment variables or properties
-    that can be set. These descriptions must also include details of any
-    configuration language used.
-  
-Perl::Phase requires no configuration files or environment variables.
-
+C<${^GLOBAL_PHASE}>
 
 =head1 DEPENDENCIES
 
-=for author to fill in:
-    A list of all the other modules that this module relies upon,
-    including any restrictions on versions, and an indication whether
-    the module is part of the standard Perl distribution, part of the
-    module's distribution, or must be installed separately. ]
-
-None.
+Perl 5.14 for C<${^GLOBAL_PHASE}>.
 
 
 =head1 INCOMPATIBILITIES AND LIMITATIONS
 
-=for author to fill in:
-    A list of any modules that this module cannot be used in conjunction
-    with. This may be due to name conflicts in the interface, or
-    competition for system or program resources, or due to internal
-    limitations of Perl (for example, many modules that use source code
-    filters are mutually incompatible).
-
 None reported.
-
 
 =head1 BUGS AND FEATURES
 
