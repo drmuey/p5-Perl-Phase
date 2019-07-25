@@ -3,7 +3,7 @@ use Perl::Phase;
 
 diag("Testing Perl::Phase $Perl::Phase::VERSION");
 
-# TODO: populate these test, {^GLOBAL_PHASE} is read-only so its not as simple as local {^GLOBAL_PHASE} = '…';
+# TODO: populate these test, ${^GLOBAL_PHASE} is read-only so its not as simple as local ${^GLOBAL_PHASE} = '…';
 describe "Perl::Phase function" => sub {
     describe "run time function" => sub {
         describe "is_run_time()" => sub {
@@ -15,8 +15,19 @@ describe "Perl::Phase function" => sub {
         };
 
         describe "assert_is_run_time()" => sub {
-            it "should not die during run time";
-            it "should die during compile time";
+            it "should not die during run time" => sub {
+                no warnings "redefine";
+                local *Perl::Phase::is_run_time = sub { 1 };
+                trap { Perl::Phase::assert_is_run_time() };
+                is $trap->die, undef;
+
+            };
+            it "should die during compile time" => sub {
+                no warnings "redefine";
+                local *Perl::Phase::is_run_time = sub { 0 };
+                trap { Perl::Phase::assert_is_run_time() };
+                like $trap->die, qr/at compile time/;
+            };
         };
     };
 
@@ -29,8 +40,19 @@ describe "Perl::Phase function" => sub {
         };
 
         describe "assert_is_compile_time()" => sub {
-            it "should not die during compile time";
-            it "should die during run time";
+            it "should not die during compile time" => sub {
+                no warnings "redefine";
+                local *Perl::Phase::is_compile_time = sub { 1 };
+                trap { Perl::Phase::assert_is_compile_time() };
+                is $trap->die, undef;
+
+            };
+            it "should die during compile time" => sub {
+                no warnings "redefine";
+                local *Perl::Phase::is_compile_time = sub { 0 };
+                trap { Perl::Phase::assert_is_compile_time() };
+                like $trap->die, qr/at run time/;
+            };
         };
     };
 };
