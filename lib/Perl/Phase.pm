@@ -58,6 +58,8 @@ sub assert_is_compile_time {
 
 __END__
 
+=encoding utf-8
+
 =head1 NAME
 
 Perl::Phase - Check if you are currently in compile time or run time
@@ -81,7 +83,6 @@ This document describes Perl::Phase version 0.01
 Some code should only run at runtime some only at compile time.
 
 This functions let you check (boolean) or assert (die) either.
-
 
 =head1 INTERFACE
 
@@ -107,13 +108,13 @@ Dies if executed at compile time, otherwise returns true.
 
 =head1 DIAGNOSTICS
 
-Assert can have two types of die message depending on the caller information.
+Assert can have two types of die messages depending on the caller information:
 
 =over
 
-=item C<< "%s() called at (run|compile) time at %s line %n\n">>
+=item C<< %s() called at (run|compile) time at %s line %n >>
 
-=item C<< This code should not be executed at (run|compile) time" >>
+=item C<< This code should not be executed at (run|compile) time >>
 
 =back
 
@@ -124,7 +125,6 @@ C<${^GLOBAL_PHASE}>
 =head1 DEPENDENCIES
 
 Perl 5.14 for C<${^GLOBAL_PHASE}>.
-
 
 =head1 INCOMPATIBILITIES AND LIMITATIONS
 
@@ -139,14 +139,12 @@ Please report any bugs or feature requests (and a pull request for bonus points)
 
 Daniel Muey  C<< <http://drmuey.com/cpan_contact.pl> >>
 
-
 =head1 LICENCE AND COPYRIGHT
 
 Copyright (c) 2019, Daniel Muey C<< <http://drmuey.com/cpan_contact.pl> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
-
 
 =head1 DISCLAIMER OF WARRANTY
 
