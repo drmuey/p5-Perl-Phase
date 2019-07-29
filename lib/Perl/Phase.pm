@@ -72,8 +72,8 @@ This document describes Perl::Phase version 0.01
 
     use Perl::Phase;
 
-    sub foo {
-        Perl::Phase::assert_is_run_time();
+    sub init_data {
+        Perl::Phase::assert_is_run_time(); # so we don’t forever bake the data in if this is perlcc’d
 
         …
     }
