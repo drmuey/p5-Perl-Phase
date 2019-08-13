@@ -11,12 +11,13 @@ use ExtUtils::MakeMaker;
 # warn "-- share/ will not be installed --\n\t$@\n-- end sharedir error --\n" if $@;
 
 WriteMakefile(
-    NAME          => 'Perl::Phase',
-    AUTHOR        => 'Daniel Muey <http://drmuey.com/cpan_contact.pl>',
-    VERSION_FROM  => 'lib/Perl/Phase.pm',
-    ABSTRACT_FROM => 'lib/Perl/Phase.pm',
-    PL_FILES      => {},
-    PREREQ_PM     => {
+    NAME             => 'Perl::Phase',
+    AUTHOR           => 'Daniel Muey <http://drmuey.com/cpan_contact.pl>',
+    VERSION_FROM     => 'lib/Perl/Phase.pm',
+    ABSTRACT_FROM    => 'lib/Perl/Phase.pm',
+    MIN_PERL_VERSION => "5.014",
+    PL_FILES         => {},
+    PREREQ_PM        => {
         'Test::More' => 0,
         'Test::Spec' => 0,
     },
