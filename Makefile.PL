@@ -20,6 +20,13 @@ WriteMakefile(
         'Test::More' => 0,
         'Test::Spec' => 0,
     },
+    META_MERGE => {
+        resources => {
+            repository => q[https://github.com/drmuey/p5-Perl-Phase.git],
+            bugtracker => q[https://github.com/drmuey/p5-Perl-Phase/issues],
+            keywords => ['perl','global','phase',],
+        },
+    },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES    => 'Perl-Phase-*' },
 );
