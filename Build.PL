@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     requires          => {
         'Test::More' => 0,
         'Test::Spec' => 0,
+        XSLoader     => 0,
     },
 
     # delete_share => '.', # NYI https://rt.cpan.org/Ticket/Display.html?id=92863

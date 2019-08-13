@@ -3,15 +3,42 @@ use Perl::Phase;
 
 diag("Testing Perl::Phase $Perl::Phase::VERSION");
 
-# TODO: populate these test, ${^GLOBAL_PHASE} is read-only so its not as simple as local ${^GLOBAL_PHASE} = '…';
 describe "Perl::Phase function" => sub {
     describe "run time function" => sub {
         describe "is_run_time()" => sub {
-            it "should be true (stage name) during INIT";
-            it "should be true (stage name) during RUN";
-            it "should be true (stage name) during END";
-            it "should be treu (stage name) during DESTRUCT";
-            it "should be false otherwise";
+            it "should be true during INIT" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_INIT };
+                ok is_run_time();
+            };
+
+            it "should be true during RUN" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_RUN };
+                ok is_run_time();
+            };
+
+            it "should be true during END" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_END };
+                ok is_run_time();
+            };
+
+            it "should be true during DESTRUCT" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_DESTRUCT };
+                ok is_run_time();
+            };
+
+            it "should be false during CONSTRUCT" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_CONSTRUCT };
+                ok !is_run_time();
+            };
+
+            it "should be false during START" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_START };
+                ok !is_run_time();
+            };
+            it "should be false during CHECK" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_CHECK };
+                ok !is_run_time();
+            };
         };
 
         describe "assert_is_run_time()" => sub {
@@ -33,10 +60,39 @@ describe "Perl::Phase function" => sub {
 
     describe "compile time function" => sub {
         describe "is_compile_time()" => sub {
-            it "should be true (stage name) during CONSTRUCT";
-            it "should be true (stage name) during START";
-            it "should be true (stage name) during CHECK";
-            it "should be false otherwise";
+            it "should be true during CONSTRUCT" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_CONSTRUCT };
+                ok is_compile_time();
+            };
+
+            it "should be true during START" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_START };
+                ok is_compile_time();
+            };
+            it "should be true during CHECK" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_CHECK };
+                ok is_compile_time();
+            };
+
+            it "should be false during INIT" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_INIT };
+                ok !is_compile_time();
+            };
+
+            it "should be false during RUN" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_RUN };
+                ok !is_compile_time();
+            };
+
+            it "should be false during END" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_END };
+                ok !is_compile_time();
+            };
+
+            it "should be true during DESTRUCT" => sub {
+                local *Perl::Phase::current_phase = sub { Perl::Phase::PERL_PHASE_DESTRUCT };
+                ok !is_compile_time();
+            };
         };
 
         describe "assert_is_compile_time()" => sub {
