@@ -3,3 +3,5 @@ Revision history for Perl-Phase
 0.01  2019-07-20 20:20:42
        Initial release.
 
+0.02  2020-01-23 19:21::47
+       XS version, thanks ATOOMIC for the suggestion *and* XS code!

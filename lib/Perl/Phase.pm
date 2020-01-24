@@ -3,17 +3,26 @@ package Perl::Phase;
 use strict;
 use warnings;
 
+our $VERSION = '0.02';
+
 use XSLoader;
 XSLoader::load(__PACKAGE__);
 
-our $VERSION = '0.02';
-
 sub is_compile_time {
-    return current_phase() & ( PERL_PHASE_CONSTRUCT | PERL_PHASE_START | PERL_PHASE_CHECK );
+    my $current_phase = current_phase();
+    return 1 if $current_phase == PERL_PHASE_CONSTRUCT();
+    return 1 if $current_phase == PERL_PHASE_START();
+    return 1 if $current_phase == PERL_PHASE_CHECK();
+    return;
 }
 
 sub is_run_time {
-    return current_phase() & ( PERL_PHASE_INIT | PERL_PHASE_RUN | PERL_PHASE_END | PERL_PHASE_DESTRUCT );
+    my $current_phase = current_phase();
+    return 1 if $current_phase == PERL_PHASE_INIT();
+    return 1 if $current_phase == PERL_PHASE_RUN();
+    return 1 if $current_phase == PERL_PHASE_END();
+    return 1 if $current_phase == PERL_PHASE_DESTRUCT();
+    return;
 }
 
 sub assert_is_run_time {
@@ -139,8 +148,6 @@ Most of the time we really only care if we are in compile time or run time so th
     if (Perl::Phase::current_phase() == Perl::Phase::PERL_PHASE_INIT ) { … we are in INIT … }
 
     if (Perl::Phase::current_phase() & (Perl::Phase::PERL_PHASE_INIT | Perl::Phase::PERL_PHASE_RUN) ) { … we are either in INIT or RUN … }
-
-=back
 
 =head1 DIAGNOSTICS
 
