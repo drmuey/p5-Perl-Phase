@@ -19,7 +19,7 @@ my %WriteMakefileArgs = (
         "File::Spec"          => 0,
         "Test::Spec"          => 0
     },
-    MIN_PERL_VERSION => "5.010",
+    MIN_PERL_VERSION => "5.014",
     PL_FILES         => {},
     PREREQ_PM        => {
         XSLoader => 0,
