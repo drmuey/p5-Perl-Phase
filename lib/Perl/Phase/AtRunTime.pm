@@ -3,7 +3,7 @@ package Perl::Phase::AtRunTime;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 
 sub import {
     my ( $class, @runtime_calls ) = @_;
@@ -51,7 +51,7 @@ Perl::Phase::AtRunTime - Register code at compile time to run at run time
 
 =head1 VERSION
 
-This document describes Perl::Phase::AtRunTime version 0.01
+This document describes Perl::Phase::AtRunTime version 0.03
 
 =head1 SYNOPSIS
 
