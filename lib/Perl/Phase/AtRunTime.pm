@@ -16,7 +16,9 @@ sub import {
         # because then the code is not executed when the caller is loaded at compile time
 
         local $@;
-        eval qq{ ## no critic qw(ProhibitStringyEval)
+
+        ## no critic qw(BuiltinFunctions::ProhibitStringyEval)
+        eval qq{
             package $caller {
                 { # for use()
                     no warnings; ## no critic qw(TestingAndDebugging::ProhibitNoWarnings)
